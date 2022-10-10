@@ -26,9 +26,6 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             Group {
-               // if postViewModel.isRefreshing {
-                //    CustomProgressView()
-                //} else {
                     ZStack {
                         List {
                             ForEach(posts) { item in
@@ -118,7 +115,6 @@ struct ContentView: View {
 //                            .font(.headline)
 //                            .padding()
 //                    }
-                //} // Else
             } // Group
             
             
