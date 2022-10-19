@@ -36,7 +36,7 @@ struct ServiceImplementation: Service {
                 
                 let jsonDecoder = JSONDecoder()
                 //jsonDecoder.dateDecodingStrategy = .iso8601
-                
+             
                 return Just(data)
                     .decode(type: type, decoder: jsonDecoder)
                     .mapError{ _ in APIError.decodingError }

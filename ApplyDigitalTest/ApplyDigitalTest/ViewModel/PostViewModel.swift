@@ -153,19 +153,26 @@ class PostViewModel: ObservableObject {
        
     }
     
+    func nullToNil(value : AnyObject?) -> AnyObject? {
+        if value is NSNull {
+            return nil
+        } else {
+            return value
+        }
+    }
     
     func createPost(context: NSManagedObjectContext, hit: Hit) {
         let post = Post(context: context)
         post.id = UUID()
         
         if let title = hit.title {
-            post.title = title
+            post.title = nullToNil(value: title) as? String
         } else {
             post.title = hit.storyTitle
         }
         
         if let url = hit.url {
-            post.story_url = url
+            post.story_url = nullToNil(value: url) as? String
         } else {
             post.story_url = hit.storyURL
         }

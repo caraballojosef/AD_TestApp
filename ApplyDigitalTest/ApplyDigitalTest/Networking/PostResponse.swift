@@ -27,16 +27,15 @@ struct Exhaustive: Codable {
 // MARK: - Hit
 struct Hit: Codable {
     let createdAt: String
-    let title: String?
-    let url: String?
+    let title, url: JSONNull?
     let author: String
-    let points: Int?
-    let storyText, commentText: String?
-    let numComments, storyID: Int?
-    let storyTitle: String?
+    let points, storyText: JSONNull?
+    let commentText: String
+    let numComments: JSONNull?
+    let storyID: Int
+    let storyTitle: String
     let storyURL: String?
-    let parentID: Int?
-    let createdAtI: Int
+    let parentID, createdAtI: Int
     let tags: [String]
     let objectID: String
     let highlightResult: HighlightResult
@@ -60,17 +59,14 @@ struct Hit: Codable {
 
 // MARK: - HighlightResult
 struct HighlightResult: Codable {
-    let author: Author
-    let commentText, storyTitle, storyURL, title: Author?
-    let url, storyText: Author?
+    let author, commentText, storyTitle: Author
+    let storyURL: Author?
 
     enum CodingKeys: String, CodingKey {
         case author
         case commentText = "comment_text"
         case storyTitle = "story_title"
         case storyURL = "story_url"
-        case title, url
-        case storyText = "story_text"
     }
 }
 
@@ -93,20 +89,8 @@ enum Query: String, Codable {
 
 // MARK: - ProcessingTimingsMS
 struct ProcessingTimingsMS: Codable {
-    let afterFetch: AfterFetch
-    let fetch: Fetch
+    let afterFetch, fetch: Fetch
     let total: Int
-}
-
-// MARK: - AfterFetch
-struct AfterFetch: Codable {
-    let format: Format
-    let total: Int
-}
-
-// MARK: - Format
-struct Format: Codable {
-    let highlighting, total: Int
 }
 
 // MARK: - Fetch
@@ -114,3 +98,29 @@ struct Fetch: Codable {
     let total: Int
 }
 
+// MARK: - Encode/decode helpers
+
+class JSONNull: Codable, Hashable {
+
+    public static func == (lhs: JSONNull, rhs: JSONNull) -> Bool {
+        return true
+    }
+
+    public var hashValue: Int {
+        return 0
+    }
+
+    public init() {}
+
+    public required init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if !container.decodeNil() {
+            throw DecodingError.typeMismatch(JSONNull.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for JSONNull"))
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encodeNil()
+    }
+}
